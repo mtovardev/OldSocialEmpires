@@ -72,6 +72,7 @@ app = Flask(__name__, template_folder=TEMPLATES_DIR)
 # ============================================================
 # BASE DE DATOS
 # ============================================================
+
 print (" [+] Creando base de datos...")
 from database import db, User, Village
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -79,7 +80,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 BASE_DIR_DB = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR_DB, "socialempires.db")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    print(" [+] Usando PostgreSQL")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'SECRET_KEY'
 
@@ -87,18 +93,9 @@ try:
     db.init_app(app)
     with app.app_context():
         db.create_all()
-
-    if os.path.exists(DB_PATH):
-        print (f" [+] Base de datos creada correctamente en: {DB_PATH}")
-    else:
-        print (f" [!] ERROR: No se pudo crear el archivo de base de datos en: {DB_PATH}")
-        print (f" [!] Verifica que tengas permisos de escritura en esa carpeta.")
-        exit(1)
-
+    print(" [+] Base de datos inicializada correctamente.")
 except Exception as e:
-    print (f" [!] ERROR al crear la base de datos: {e}")
-    print (f" [!] Asegúrate de tener instalado flask-sqlalchemy:")
-    print (f" [!]     python -m pip install flask-sqlalchemy")
+    print(f" [!] ERROR al inicializar la base de datos: {e}")
     exit(1)
 
 # ============================================================
