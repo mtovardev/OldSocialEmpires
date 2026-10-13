@@ -3,7 +3,8 @@ import os
 import json
 import urllib
 import threading
-import webview
+if 'RENDER' not in os.environ:
+    import webview
 import uuid
 import tempfile
 import subprocess
