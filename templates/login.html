@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Empires - Servidor Privado</title>
+    <link rel="shortcut icon" href="img/icon.gif" />
+    <link rel="icon" type="image/png" href="img/icon.gif" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="">Inicio</a>
+            <a href="">Tienda</a>
+            <img src="img/logopriv.png" alt="Social Empires Logo">
+            <a href="">Discord</a>
+            <a href="register.html" class="register-button">Registrarse</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth">
+            <h1>¡Bienvenido Guerrero!</h1>
+            <div class="auth-box">
+                <form method="post" action="/login">
+                    {% if error %}
+                        <div style="background-color: #ff4444; color: white; padding: 10px; margin-bottom: 15px; border: 3px solid #0a0a1a;font-size: 10px;">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="username">Nombre de usuario:</label>
+                        <input type="text" id="username" name="username" placeholder="Ej: Emperador123" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" id="password" name="password" placeholder="Ej: ********" required>
+                    </div>
+                    <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
+                    <button type="submit" class="login-button">Iniciar Sesión</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="news-section">
+            <h2>📰 Noticias y Actualizaciones</h2>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-icon">🎉</div>
+                    <h3>¡Bienvenido!</h3>
+                    <p>Estamos emocionados de tenerte aquí. Este es un servidor privado de Social Empires, hecho por y para fans.</p>
+                </div>
+                <div class="news-card">
+                    <div class="news-icon">🛠️</div>
+                    <h3>En Desarrollo</h3>
+                    <p>El servidor está en fase alpha. Algunas funciones pueden no estar completas, pero trabajamos cada día para mejorarlo.</p>
+                </div>
+                <div class="news-card">
+                    <div class="news-icon">💬</div>
+                    <h3>Únete a Discord</h3>
+                    <p>Reporta errores, sugiere ideas y conoce a otros jugadores en nuestro servidor de Discord.</p>
+                </div>
+                <div class="news-card">
+                    <div class="news-icon">⚔️</div>
+                    <h3>Construye tu Imperio</h3>
+                    <p>Reclama recursos, entrena tropas y conquista a tus vecinos. ¡La gloria te espera!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

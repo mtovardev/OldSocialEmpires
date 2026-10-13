@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Empires - Perfil</title>
+    <link rel="shortcut icon" href="img/icon.gif" />
+    <link rel="icon" type="image/png" href="img/icon.gif" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="">Tienda</a>
+            <img src="img/logopriv.png" alt="Social Empires Logo">
+            <a href="">Discord</a>
+            <a href="/logout" class="register-button">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth profile-card">
+            <h1>👤 Perfil del Guerrero</h1>
+            
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <img src="{{ save_info.pic or 'img/profile/default.png' }}" alt="Avatar">
+                </div>
+                <div class="profile-details">
+                    <h2>{{ save_info.name }}</h2>
+                    <p><strong>Jugador:</strong> {{ save_info.player_name }}</p>
+                    <p><strong>Nivel:</strong> {{ save_info.level }}</p>
+                    <p><strong>XP:</strong> {{ save_info.xp }}</p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="/play.html" class="login-button">🎮 Jugar</a>
+            </div>
+        </div>
+
+        <div class="news-section">
+            <h2>📊 Recursos del Imperio</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">{{ save_info.coins }}</div>
+                    <div class="stat-label">Monedas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value">{{ save_info.xp }}</div>
+                    <div class="stat-label">Experiencia</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏅</div>
+                    <div class="stat-value">{{ save_info.level }}</div>
+                    <div class="stat-label">Nivel</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🪨</div>
+                    <div class="stat-value">{{ save_info.stone }}</div>
+                    <div class="stat-label">Piedra</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🪵</div>
+                    <div class="stat-value">{{ save_info.wood }}</div>
+                    <div class="stat-label">Madera</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🍖</div>
+                    <div class="stat-value">{{ save_info.food }}</div>
+                    <div class="stat-label">Comida</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
