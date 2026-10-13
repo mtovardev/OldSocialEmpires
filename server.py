@@ -28,6 +28,41 @@ from constants import Constant
 from quests import get_quest_map
 from bundle import ASSETS_DIR, STUB_DIR, TEMPLATES_DIR, BASE_DIR
 
+# ============================================================
+# DESCARGA DE ASSETS DESDE UPSTASH BLOB
+# ============================================================
+
+UPSTASH_URL = os.environ.get('https://bb157b505402.blob.upstash.io', '')
+
+def download_assets_if_needed():
+    """Descarga los assets desde Upstash si no existen localmente."""
+    if not UPSTASH_URL:
+        print(" [!] UPSTASH_URL no configurada. Usando assets locales.")
+        return
+    
+    print(f" [+] Verificando assets desde: {UPSTASH_URL}")
+    
+    files_to_download = [
+        "swf/SELoader.swf",
+        "swf/SocialEmpires0926bsec.swf",
+        "swf/20130417_projectiles.swf",
+        "swf/20131010_magicParticles.swf",
+        "swf/120608_dynamic.swf",
+    ]
+    
+    for file in files_to_download:
+        local_path = os.path.join(ASSETS_DIR, file)
+        if not os.path.exists(local_path):
+            try:
+                os.makedirs(os.path.dirname(local_path), exist_ok=True)
+                url = f"{UPSTASH_URL}/{file}"
+                print(f" [+] Descargando: {file}")
+                urllib.request.urlretrieve(url, local_path)
+            except Exception as e:
+                print(f" [!] Error al descargar {file}: {e}")
+
+download_assets_if_needed()
+
 host = '127.0.0.1'
 port = 5050
 
@@ -75,58 +110,6 @@ from sessions import load_saved_villages, all_saves_userid, all_saves_info, save
 with app.app_context():
     load_saved_villages()
 
-# ============================================================
-# AUTO-UPDATE
-# ============================================================
-import urllib.request
-
-UPDATE_URL = "https://raw.githubusercontent.com/mtovardev/newempire/main/update.json"
-
-def check_for_updates():
-    """Comprueba si hay una nueva versión disponible en GitHub."""
-    try:
-        print(" [+] Comprobando actualizaciones...")
-        with urllib.request.urlopen(UPDATE_URL, timeout=5) as response:
-            data = json.loads(response.read().decode('utf-8'))
-        
-        latest_version = data.get("version")
-        download_url = data.get("url")
-        
-        if latest_version and latest_version != version_code:
-            print(f" [+] Nueva versión disponible: {latest_version} (actual: {version_code})")
-            return download_url
-        else:
-            print(f" [+] Estás en la última versión ({version_code})")
-            return None
-    except Exception as e:
-        print(f" [!] No se pudo comprobar actualizaciones: {e}")
-        return None
-
-def download_and_install(url):
-    """Descarga e instala la actualización."""
-    try:
-        print(f" [+] Descargando actualización desde: {url}")
-        
-        # Descargar a una carpeta temporal
-        temp_dir = tempfile.gettempdir()
-        installer_path = os.path.join(temp_dir, "OldSocialEmpiresLauncher_Setup.exe")
-        
-        urllib.request.urlretrieve(url, installer_path)
-        print(f" [+] Descargado en: {installer_path}")
-    
-        subprocess.Popen([installer_path, "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"])
-        
-        # Cerrar el launcher para que el instalador pueda reemplazar los archivos
-        print(" [+] Cerrando el launcher para aplicar la actualización...")
-        sys.exit(0)
-        
-    except Exception as e:
-        print(f" [!] Error al descargar la actualización: {e}")
-
-update_url = check_for_updates()
-if update_url:
-    download_and_install(update_url)
-
 print (" [+] Configurando rutas del servidor...")
 
 # ============================================================
@@ -144,14 +127,12 @@ def is_maintenance_mode():
 
 @app.before_request
 def check_maintenance():
-    """Bloquea todas las peticiones si el modo mantenimiento está activo."""
     if is_maintenance_mode():
         if request.path != '/maintenance' and not request.path.startswith('/css/') and not request.path.startswith('/img/'):
             abort(503)
 
 @app.errorhandler(503)
 def maintenance_page(error):
-    """Muestra la página de mantenimiento."""
     return render_template('maintenance.html'), 503
 
 # ============================================================
@@ -342,7 +323,7 @@ def static_assets_loader(path):
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
-            URL = f"https://static.socialpointgames.com/static/socialempires/assets/{path}"
+            URL = f"{UPSTASH_URL}/{path}"
             try:
                 response = urllib.request.urlretrieve(URL, f"{BASE_DIR}/download_assets/assets/{path}")
             except urllib.error.HTTPError:
