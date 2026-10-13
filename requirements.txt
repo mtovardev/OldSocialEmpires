@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Werkzeug
 jsonpatch
 gunicorn
+psycopg2-binary
